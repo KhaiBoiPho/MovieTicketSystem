@@ -1,4 +1,3 @@
-````markdown
 # Movie Ticket System - Spring Boot Project
 
 This project is a movie ticket booking system implemented using **Spring Boot**. The system is designed to handle concurrent requests using **Java concurrency** features such as synchronization, locks, and thread management. The application provides functionalities for movie management, seat selection, ticket booking, and payment (optional).
@@ -7,54 +6,60 @@ This project is a movie ticket booking system implemented using **Spring Boot**.
 
 The Movie Ticket System allows users to:
 
-- View available movies and showtimes.
-- Select seats for booking.
-- View available seats in real-time to avoid double booking.
-- Cancel a booking and release the seat.
+* View available movies and showtimes.
+* Select seats for booking.
+* View available seats in real-time to avoid double booking.
+* Cancel a booking and release the seat.
 
 This system utilizes Java's concurrency features to handle multiple booking requests from customers simultaneously without data inconsistencies such as double booking.
 
 ## Features
 
 1. **Movie and ShowTime Management** (Optional):
-   - Manage a list of available movies and showtimes.
-   - Admins can add, delete, or update movie and showtime details.
+
+   * Manage a list of available movies and showtimes.
+   * Admins can add, delete, or update movie and showtime details.
 
 2. **Seat Selection and Ticket Booking**:
-   - Customers can choose a movie, select a showtime (optional), and pick available seats.
-   - The system ensures that no seat is sold twice concurrently.
+
+   * Customers can choose a movie, select a showtime (optional), and pick available seats.
+   * The system ensures that no seat is sold twice concurrently.
 
 3. **Ticket Payment and Confirmation** (Optional):
-   - Customers can pay for tickets after selecting seats.
-   - The system confirms booking success or failure based on seat availability.
+
+   * Customers can pay for tickets after selecting seats.
+   * The system confirms booking success or failure based on seat availability.
 
 4. **Seat Status Management**:
-   - Customers can cancel a booking and free up the seat for other users.
-   - Changes to seat status (booked or cancelled) are synchronized to prevent race conditions.
+
+   * Customers can cancel a booking and free up the seat for other users.
+   * Changes to seat status (booked or cancelled) are synchronized to prevent race conditions.
 
 ## Technologies Used
 
-- **Java 17.0.14+7-Ubuntu-124.04**
-- **Spring Boot**: For building the web application.
-- **Maven**: Apache Maven 3.8.7.
-- **Thymeleaf**: For rendering dynamic web pages.
-- **Spring Web**: For building the web services.
-- **JSP** (optional): For server-side rendering of HTML (if used).
+* **Java 17.0.14+7-Ubuntu-124.04**
+* **Spring Boot**: For building the web application.
+* **Maven**: Apache Maven 3.8.7.
+* **Thymeleaf**: For rendering dynamic web pages.
+* **Spring Web**: For building the web services.
+* **JSP** (optional): For server-side rendering of HTML (if used).
 
 ## Setup and Installation
 
 ### 1. Clone the repository:
 
-```bash
+Open your terminal and run the following commands:
+
+```
 git clone https://github.com/KhaiBoiPho/MovieTicketSystem.git
 cd MovieTicketSystem
-````
+```
 
 ### 2. Install Dependencies:
 
 Ensure you have **Java 17** and **Maven** installed. Then, run the following command to install project dependencies:
 
-```bash
+```
 mvn clean install
 ```
 
@@ -62,7 +67,7 @@ mvn clean install
 
 To run the project, execute:
 
-```bash
+```
 mvn spring-boot:run
 ```
 
@@ -82,3 +87,9 @@ The project consists of the following key components:
 
 * This application uses **Java concurrency** features (synchronized blocks, locks) to handle concurrent ticket booking.
 * If you face any issues or have suggestions for improvement, feel free to create an issue on GitHub.
+
+---
+
+Enjoy booking your movie tickets! 🎬
+
+---
