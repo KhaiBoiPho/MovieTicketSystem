@@ -1,0 +1,254 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Movie Ticket System</title>
+<style>
+    :root {
+        --primary: #4CAF50;
+        --primary-dark: #388E3C;
+        --danger: #f44336;
+        --danger-dark: #d32f2f;
+        --gray-light: #f5f5f5;
+        --gray-border: #ddd;
+        --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+        font-family: var(--font-main);
+        background-color: #fafafa;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 30px;
+    }
+
+    h1, h2, h3 {
+        color: #333;
+    }
+
+    .movie-info {
+        background-color: var(--gray-light);
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 40px;
+    }
+
+    th, td {
+        text-align: center;
+        padding: 12px;
+        border-bottom: 1px solid var(--gray-border);
+    }
+
+    th {
+        background-color: #f0f0f0;
+        font-weight: 600;
+    }
+
+    button {
+        padding: 8px 14px;
+        font-size: 14px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+
+    button:hover:not(:disabled) {
+        background-color: var(--primary-dark);
+    }
+
+    button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .booked {
+        background-color: var(--danger);
+    }
+
+    .booked:hover:not(:disabled) {
+        background-color: var(--danger-dark);
+    }
+
+    /* Modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.4);
+        backdrop-filter: blur(2px);
+    }
+
+    .modal-content {
+        background-color: #fff;
+        margin: 12% auto;
+        padding: 25px 30px;
+        width: 90%;
+        max-width: 450px;
+        border-radius: 10px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .modal-content h2 {
+        margin-top: 0;
+        color: var(--primary-dark);
+    }
+
+    .modal-content p {
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    .close-btn {
+        float: right;
+        font-size: 26px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #999;
+    }
+
+    .close-btn:hover {
+        color: black;
+    }
+
+    #reservationCode {
+        font-size: 22px;
+        color: var(--primary-dark);
+        margin-top: 10px;
+        width: 100%;  /* Đảm bảo chiều rộng đầy đủ */
+        text-align: center; /* Canh giữa chữ */
+    }
+
+    /* Cancel form */
+    /* Đặt chiều rộng cho ô nhập mã hủy vé (giữ nguyên) */
+    #cancelForm input[type="text"] {
+        padding: 10px;
+        width: calc(100% - 20px);  /* Tương tự ô mã đặt vé */
+        max-width: 300px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    #cancelForm input[type="text"] {
+        padding: 10px;
+        width: calc(100% - 20px);
+        max-width: 300px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    #cancelForm button {
+        background-color: var(--danger);
+    }
+
+    #cancelForm button:hover {
+        background-color: var(--danger-dark);
+    }
+
+    #cancelMessage {
+        color: var(--danger-dark);
+        font-weight: bold;
+    }
+</style>
+</head>
+<body>
+
+<h1>Chọn Phim: <span th:text="${movie.title}"></span></h1>
+
+<div class="movie-info">
+    <h3>Thể loại: <span th:text="${movie.genre}"></span></h3>
+    <h3>Giá vé: <span th:text="${movie.ticketPrice}"></span></h3>
+</div>
+
+<!-- Modal thông báo -->
+<div id="reservationModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitle">Thông báo</h2>
+        <p id="reservationMessage"></p>
+        <p id="reservationCode" style="font-weight: bold; font-size: 20px;"></p>
+        <button onclick="closeModal()">Đóng</button>
+    </div>
+</div>
+
+<!-- Form hủy vé -->
+<h2>Danh sách ghế</h2>
+<table>
+    <tr>
+        <th>Ghế</th>
+        <th>Tình trạng</th>
+        <th>Đặt vé</th>
+        <th>Hủy vé</th>
+    </tr>
+    <tr th:each="seat : ${seats}">
+        <td th:text="${seat.seatNumber}"></td>
+        <td>
+            <span th:if="${seat.available}">Trống</span>
+            <span th:if="${!seat.available}">Đã bán</span>
+        </td>
+        <td>
+            <form th:action="@{/reserve}" method="post">
+                <input type="hidden" name="seatNumber" th:value="${seat.seatNumber}" />
+                <button type="submit"
+                        th:classappend="${!seat.available} ? 'booked' : ''"
+                        th:disabled="${!seat.available}">
+                    Đặt vé
+                </button>
+            </form>
+        </td>
+        <td>
+            <form th:action="@{/cancel}" method="post">
+                <input type="hidden" name="seatNumber" th:value="${seat.seatNumber}" />
+                <input type="text" name="enteredCode" placeholder="Mã đặt vé" required />
+                <button type="submit" th:disabled="${seat.available}">Hủy vé</button>
+            </form>
+        </td>
+    </tr>
+</table>
+
+<script th:inline="javascript">
+    function showModal(message, reservationCode) {
+        const modal = document.getElementById("reservationModal");
+        const messageElement = document.getElementById("reservationMessage");
+        const codeElement = document.getElementById("reservationCode");
+        const titleElement = document.getElementById("modalTitle");
+
+        const hasCode = reservationCode && reservationCode !== 'null';
+
+        titleElement.innerText = hasCode ? "Đặt vé thành công!" : "Thông báo";
+        messageElement.innerText = message || "";
+        codeElement.innerText = hasCode ? reservationCode : "";
+
+        modal.style.display = "block";
+    }
+
+    function closeModal() {
+        document.getElementById("reservationModal").style.display = "none";
+    }
+
+    const message = /*[[${message}]]*/ null;
+    const reservationCode = /*[[${reservationCode}]]*/ null;
+
+    if (message !== null && typeof message !== "undefined") {
+        showModal(message, reservationCode);
+    }
+</script>
+
+</body>
+</html>
