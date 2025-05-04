@@ -1,5 +1,3 @@
-Certainly! Here’s the revised README formatted in a more structured way for your project:
-
 ````markdown
 # Movie Ticket System - Spring Boot Project
 
