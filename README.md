@@ -90,6 +90,6 @@ The project consists of the following key components:
 
 ---
 
-Enjoy booking your movie tickets! 🎬
+Enjoy booking your movie tickets!
 
 ---
